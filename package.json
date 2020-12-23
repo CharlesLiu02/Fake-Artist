@@ -1,0 +1,10 @@
+{
+    "name": "fake-artist",
+    "version": "0.0.1",
+    "main": "server.js",
+    "description": "A Fake Artist Goes To New York",
+    "dependencies": {
+        "express": "^4.17.1",
+        "socket.io": "^3.0.4"
+    }
+}

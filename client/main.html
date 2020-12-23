@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Artist</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div id="content">
+        <div id="header-container">
+            <h1 id="title">A Fake Artist Goes to New York</h1>
+            <div id="info">
+                <h3>Time: <span id="time">Placeholder</span></h3>
+                <h3>Category: <span id="category">Placeholder</span></h3>
+                <h3>Word: <span id="word">Placeholder</span></h3>
+            </div>
+        </div>
+        <div id="scores-container">
+            <ul id="scores">
+                <li>
+                    <h4>Player 1</h4>
+                    <h4>Score: <span>500</span></h4>
+                </li>
+            </ul>
+        </div>
+        <div id="canvas-container">
+            <canvas>
+
+            </canvas>
+        </div>
+        <div id="chat-container">
+            <ul id="events"></ul>
+            <div class="controls">
+                <div class="chat-wrapper">
+                    <form id="chat-form">
+                        <input id="chat" autocomplete="off" title="chat"/>
+                        <button id="send-btn">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="src/client.js"></script>
+</body>
+</html>
