@@ -23,16 +23,16 @@
 #canvas-container {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
-    border: 5px black solid;
 }
 
 #chat-container {
     grid-column: 3 / 4;
-    grid-row: 2 / 3;
+    grid-row: 2;
     border: 5px black solid;
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    justify-content: space-between;
     background-color: rgb(131, 212, 236);
 }
 
@@ -59,4 +59,13 @@
 
 .chat-wrapper button {
     width: 25%
+}
+
+canvas {
+    width: 100%;
+    border: 2px red solid;
+}
+
+#canvas-resize {
+    border: 5px black solid;
 }
