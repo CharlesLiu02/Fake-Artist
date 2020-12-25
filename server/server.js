@@ -17,6 +17,8 @@ app.get('/', (req, res) => {
     res.sendFile(path.resolve(clientPath + '/main.html'));
 });
 
+var players = []
+
 io.on('connection', (socket) => {
     console.log('A user connected')
 
@@ -25,6 +27,11 @@ io.on('connection', (socket) => {
     // socket.on('start game', () => io.emit('start game'))
     socket.on('draw', (data) => {
         io.emit('draw', data)
+    })
+
+    socket.on('player joined', (username) => {
+        players.push(username)
+        io.emit('update players', players)
     })
 
     socket.on('disconnect', () => {

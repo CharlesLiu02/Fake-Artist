@@ -9,20 +9,27 @@
 <body>
     <div id="content">
         <div id="header-container">
-            <h1 id="title">A Fake Artist Goes to New York</h1>
-            <div id="info">
-                <h3>Time: <span id="time">Placeholder</span></h3>
-                <h3>Category: <span id="category">Placeholder</span></h3>
-                <h3>Word: <span id="word">Placeholder</span></h3>
+            <div id="top">
+                <h1 id="title">A Fake Artist Goes to New York</h1>
+                <form>
+                    <button onclick="window.open('https://tesera.ru/images/items/744225/rule_fakeartist_e.pdf')" id="rules-btn">Rules</button>
+                </form>
+            </div>
+            <div id="menu">
+                <div id="info">
+                    <h3>Time: <span id="time">Placeholder</span></h3>
+                    <h3>Category: <span id="category">Placeholder</span></h3>
+                    <h3>Word: <span id="word">Placeholder</span></h3>
+                </div>
+                <div id="game-controls">
+                    <button id="reset-btn">Reset</button>
+                    <button id="start-btn">Start</button>
+                </div>
             </div>
         </div>
         <div id="scores-container">
-            <ul id="scores">
-                <li>
-                    <h4>Lena Kushigemachi</h4>
-                    <h4>Score: <span>500</span></h4>
-                </li>
-            </ul>
+            <h3>Players</h3>
+            <ul id="players"></ul>
         </div>
         <div id="canvas-container">
             <div id="canvas-resize">

@@ -4,15 +4,15 @@ canvas.width = width
 const heightRatio = 0.67
 canvas.height = canvas.width * heightRatio
 
-const resizeCanvas = (e) => {
-    const {width} = canvas.getBoundingClientRect()
-    canvas.width = width
-    const heightRatio = 0.67
-    canvas.height = canvas.width * heightRatio
-}
+// const resizeCanvas = (e) => {
+//     const {width} = canvas.getBoundingClientRect()
+//     canvas.width = width
+//     const heightRatio = 0.67
+//     canvas.height = canvas.width * heightRatio
+// }
+
 const ctx = canvas.getContext('2d');
 
-// canvas.height = canvas.width * 0.67; // Or whatever frontend wants
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms)); // Asynchronous sleep
 
 

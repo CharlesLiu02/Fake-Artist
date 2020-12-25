@@ -13,6 +13,16 @@
     background-color: rgb(131, 212, 236);
 }
 
+#top {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#rules-btn {
+    margin-top: 20px;
+    max-height: 25px;
+}
+
 #scores-container {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
@@ -39,9 +49,17 @@
 #info {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     margin: 0.5em;
     padding: 0 10em;
+}
+
+#menu {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#menu h3 {
+    margin: 0 3em 0;
 }
 
 #title {
@@ -63,7 +81,6 @@
 
 canvas {
     width: 100%;
-    border: 2px red solid;
 }
 
 #canvas-resize {

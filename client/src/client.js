@@ -15,6 +15,16 @@ const onChatSubmitted = (socket) => (e) => {
     socket.emit('message', text)
 }
 
+const updatePlayers = (players) => {
+    var parent = document.querySelector('#players')
+    parent.innerHTML = ''
+    for (var i = 0; i < players.length; i++) {
+        const elem = document.createElement('li')
+        elem.innerHTML = "<h4>" + players[i] + "</h4>"
+        parent.appendChild(elem)
+    }
+}
+
 // var pos = {x: 0, y: 0}
 
 // const updateBoard = (canvas) => {
@@ -54,7 +64,9 @@ const onChatSubmitted = (socket) => (e) => {
 const socket = io()
 
 socket.on('message', log)
+socket.on('update players', updatePlayers)
 
 document.querySelector('#chat-form').addEventListener('submit', onChatSubmitted(socket))
 
-window.addEventListener('resize', resizeCanvas)
+var username = prompt("Enter Name:")
+socket.emit('player joined', username)
