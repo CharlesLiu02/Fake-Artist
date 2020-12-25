@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Artist</title>
+    <link rel="stylesheet" href="styles/lobby.css">
+</head>
+<body>
+    <div id="content">
+        <div id="info">
+            <div id="players-container">
+                <h2>Players</h2>
+                <ul id="players">
+                    <li>Lena Kushigemachi</li>
+                </ul>
+            </div>
+            <div id="categories-container">
+                <h2>Categories</h2>
+                <ul id="categories">
+                    <li>Animals</li>
+                    <li>Household Objects</li>
+                    <li>Food</li>
+                </ul>
+            </div>
+            <div id="custom-container">
+                <h2>Custom Categories</h2>
+                <div class="controls">
+                    <div id="custom-container">
+                        <form id="custom-form">
+                            <input id="custom" autocomplete="off" title="custom"/>
+                            <button id="add-btn">Add</button>
+                        </form>
+                    </div>
+                </div>
+                <ul id="customs"></ul>
+            </div>
+        </div>
+        <form id="start-form">
+            <button id="start-btn">Start</button>
+        </form>
+    </div>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="src/lobby.js"></script>
+</body>
+</html>

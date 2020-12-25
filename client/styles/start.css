@@ -1,0 +1,12 @@
+html, body {
+    height: 98%;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+    border: 2px red solid;
+}

@@ -21,6 +21,11 @@ io.on('connection', (socket) => {
     console.log('A user connected')
 
     socket.on('message', (text) => io.emit('message', text))
+    // socket.on('add category', (text) => io.emit('add category', text))
+    // socket.on('start game', () => io.emit('start game'))
+    socket.on('draw', (data) => {
+        io.emit('draw', data)
+    })
 
     socket.on('disconnect', () => {
         console.log('User disconnected')
