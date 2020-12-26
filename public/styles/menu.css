@@ -8,5 +8,17 @@ html, body {
     justify-content: space-evenly;
     align-items: center;
     height: 100%;
-    border: 2px red solid;
+}
+
+#info-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#info-form button {
+    margin: 10px 0 10px;
+}
+
+#info-form input {
+    margin: 10px 0 10px;
 }

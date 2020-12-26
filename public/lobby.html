@@ -8,12 +8,14 @@
 </head>
 <body>
     <div id="content">
+        <div id="room-container">
+            <h1>Room Code:</h1>
+            <h1 id="room-code"></h1>
+        </div>
         <div id="info">
             <div id="players-container">
                 <h2>Players</h2>
-                <ul id="players">
-                    <li>Lena Kushigemachi</li>
-                </ul>
+                <ul id="users"></ul>
             </div>
             <div id="categories-container">
                 <h2>Categories</h2>
@@ -37,10 +39,11 @@
             </div>
         </div>
         <form id="start-form">
-            <button id="start-btn">Start</button>
+            <button formaction="main.html "start-btn">Start</button>
         </form>
     </div>
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="src/lobby.js"></script>
 </body>
 </html>

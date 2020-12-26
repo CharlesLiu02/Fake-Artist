@@ -2,7 +2,7 @@
     align-content: center;
     display: grid;
     grid-template-columns: 20% 60% 20%;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 0.9fr 0.1fr;
     height: 95vh;
 }
 
@@ -10,6 +10,7 @@
     grid-column: 1 / 4;
     grid-row: 1 / 2;
     border: 5px black solid;
+    border-bottom: 0;
     background-color: rgb(131, 212, 236);
 }
 
@@ -25,25 +26,24 @@
 
 #scores-container {
     grid-column: 1 / 2;
-    grid-row: 2 / 3;
+    grid-row: 2 / 4;
     border: 5px black solid;
     background-color: rgb(131, 212, 236);
 }
 
 #canvas-container {
     grid-column: 2 / 3;
-    grid-row: 2 / 3;
+    grid-row: 2 / 4;
 }
 
 #chat-container {
     grid-column: 3 / 4;
-    grid-row: 2;
+    grid-row: 2 / 3;
     border: 5px black solid;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
     background-color: rgb(131, 212, 236);
+    overflow-y: scroll;
+    overflow-wrap: break-word;
+    border-bottom: 0;
 }
 
 #info {
@@ -66,7 +66,14 @@
     margin: 0.5em;
 }
 
+#events {
+    list-style: none;
+}
+
 .chat-wrapper {
+    grid-column: 3 / 4;
+    grid-row: 3 / 4;
+    border: 5px black solid;
     padding: 0.5rem;
     min-width: 250px;
 }
@@ -85,4 +92,6 @@ canvas {
 
 #canvas-resize {
     border: 5px black solid;
+    border-left: 0;
+    border-right: 0;
 }

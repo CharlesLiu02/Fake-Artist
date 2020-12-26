@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fake Artist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
@@ -37,19 +38,25 @@
             </div>
         </div>
         <div id="chat-container">
-            <ul id="events"></ul>
-            <div class="controls">
-                <div class="chat-wrapper">
-                    <form id="chat-form">
-                        <input id="chat" autocomplete="off" title="chat"/>
-                        <button id="send-btn">Send</button>
-                    </form>
-                </div>
+            <div id="chat-div">
+                <ul id="events"></ul>
             </div>
+        </div> 
+        <div class="chat-wrapper">
+            <form id="chat-form">
+                <input
+                id="chat"
+                type="text"
+                placeholder="Enter Message"
+                autocomplete="off"/>
+                <button class="send-btn"><i class="fas fa-paper-plane"></i> Send</button>
+            </form>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="src/client.js"></script>
+    <script src="src/main.js"></script>
+    <script src="src/chat.js"></script>
     <script src="src/queue.js"></script>
     <script src="src/canvas.js"></script>
 </body>

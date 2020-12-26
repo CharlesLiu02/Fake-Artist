@@ -5,37 +5,67 @@ const express = require('express')
 const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server)
+const formatMessage = require("../utils/messages");
+const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require("../utils/users")
+
+const PORT = process.env.PORT || 8080
 
 // Used for accessing html, stylesheets, and JS files
-const clientPath = `${__dirname}/../client`;
+const clientPath = path.join(__dirname, '../public')
 
-// Serving public files
+// Serving public files, set static folder
 app.use(express.static(clientPath))
 
 // Defined a route handler / that gets called when at website home
 app.get('/', (req, res) => {
-    res.sendFile(path.resolve(clientPath + '/main.html'));
+    res.sendFile(path.resolve(clientPath + '/menu.html'));
 });
 
-var players = []
+const botName = ''
 
+// socket.emit -> single socket
+// io.emit -> all sockets
+// socket.broadcast.emit -> all sockets besides the current one
 io.on('connection', (socket) => {
-    console.log('A user connected')
+    socket.on('join room', ({username, room}) => {
+        const user = userJoin(socket.id, username, room)
 
-    socket.on('message', (text) => io.emit('message', text))
+        socket.join(user.room)
+
+        //Welcome current user
+        socket.emit('message', formatMessage(botName, "Welcome to Fake Artist!"))
+
+        // Broadcast when a user connects
+        socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`))
+
+        // Send users and room info
+        io.to(user.room).emit('room users', {
+            room: user.room,
+            users: getRoomUsers(user.room)
+        })
+    })
+
+    // Handling chat messaging
+    socket.on('chat message', (text) => {
+        const user = getCurrentUser(socket.id)
+        io.to(user.room).emit('message', formatMessage(user.username, text))
+    })
     // socket.on('add category', (text) => io.emit('add category', text))
     // socket.on('start game', () => io.emit('start game'))
     socket.on('draw', (data) => {
         io.emit('draw', data)
     })
 
-    socket.on('player joined', (username) => {
-        players.push(username)
-        io.emit('update players', players)
-    })
-
     socket.on('disconnect', () => {
-        console.log('User disconnected')
+        const user = userLeave(socket.id)
+        if (user) {
+            io.to(user.room).emit('message', formatMessage(botName, `${user} has left the game`))
+            // Send users and room info
+            io.to(user.room).emit('room users', {
+                room: user.room,
+                users: getRoomUsers(user.room)
+            })
+        }
     })
 });
 
@@ -43,6 +73,6 @@ server.on('error', (err) => {
     console.error('Server error:', err);
 });
 
-server.listen(8080, () => {
-    console.log('listening on 8080');
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
 });
