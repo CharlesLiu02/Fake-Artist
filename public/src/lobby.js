@@ -1,3 +1,8 @@
+// Get username and room from URL
+const {username, room} = Qs.parse(location.search, {
+    ignoreQueryPrefix: true
+})
+
 //Adds custom category
 const log = (text) => {
     const parent = document.querySelector('#customs')
@@ -24,13 +29,10 @@ const onStart = (socket) => (e) => {
 //Handle switching pages for all users
 const doStart = () => {
     console.log("here")
-    location.replace("main.html")
+    document.getElementById('username').value = username
+    document.getElementById('room').value = room
+    document.getElementById('info-form').submit()
 }
-
-// Get username and room from URL
-const {username, room} = Qs.parse(location.search, {
-    ignoreQueryPrefix: true
-})
 
 const displayRoomCode = (room) => {
     const roomElem = document.getElementById("room-code")
@@ -48,14 +50,15 @@ const socket = io()
 // Join room
 socket.emit('join room', {username, room})
 
-
 // Get room and users
 socket.on('room users', ({room, users}) => {
    displayRoomCode(room) 
    displayUsers(users)
 })
 
+socket.on('start game', doStart)
+
 // socket.on('add category', log)
 
 // document.querySelector('#custom-form').addEventListener('submit', onCategorySubmitted(socket))
-// document.getElementById('start-btn').addEventListener('click', onStart(socket))
+document.getElementById('start-btn').addEventListener('click', onStart(socket))

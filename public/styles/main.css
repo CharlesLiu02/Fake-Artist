@@ -88,10 +88,12 @@
 
 canvas {
     width: 100%;
+    border: 2px red solid;
 }
 
 #canvas-resize {
     border: 5px black solid;
     border-left: 0;
     border-right: 0;
+    overflow: hidden;
 }

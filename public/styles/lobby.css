@@ -16,3 +16,7 @@
 #room-code {
     color: red;
 }
+
+#info-form input {
+    display: none;
+}

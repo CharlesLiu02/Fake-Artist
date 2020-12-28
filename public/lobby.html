@@ -38,8 +38,21 @@
                 <ul id="customs"></ul>
             </div>
         </div>
-        <form id="start-form">
-            <button formaction="main.html "start-btn">Start</button>
+        <form id="info-form" action="main.html">
+            <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Enter username"
+                required
+            />
+            <input
+                type="text"
+                name="room"
+                id="room"
+                placeholder="Enter room code"
+            />
+            <button type="submit" id="start-btn">Start</button>
         </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js" integrity="sha512-BHtomM5XDcUy7tDNcrcX1Eh0RogdWiMdXl3wJcKB3PFekXb3l5aDzymaTher61u6vEZySnoC/SAj2Y/p918Y3w==" crossorigin="anonymous"></script>

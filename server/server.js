@@ -50,8 +50,18 @@ io.on('connection', (socket) => {
         const user = getCurrentUser(socket.id)
         io.to(user.room).emit('message', formatMessage(user.username, text))
     })
+
     // socket.on('add category', (text) => io.emit('add category', text))
-    // socket.on('start game', () => io.emit('start game'))
+    socket.on('start game', () => io.to(getCurrentUser(socket.id).room).emit('start game'))
+    // socket.on('room users', () => {
+    //     const user = getCurrentUser(socket.id)
+    //     console.log(socket.id)
+    //     io.to(user.room).emit('room users', {
+    //         room: user.room,
+    //         users: getRoomUsers(user.room)
+    //     })
+    // })
+
     socket.on('draw', (data) => {
         io.emit('draw', data)
     })

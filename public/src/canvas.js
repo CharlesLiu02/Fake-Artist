@@ -1,7 +1,7 @@
 const canvas = document.querySelector('canvas')
 const {width} = canvas.getBoundingClientRect()
 canvas.width = width
-const heightRatio = 0.702
+const heightRatio = 0.698
 canvas.height = canvas.width * heightRatio
 
 // const resizeCanvas = (e) => {
@@ -89,7 +89,10 @@ async function draw_queue() {
 }
 
 canvas.addEventListener("mousedown", startPosition);
-canvas.addEventListener("mouseup", finishedPosition);
+canvas.addEventListener("mouseup", () => {
+    finishedPosition()
+    
+});
 canvas.addEventListener("mousemove", draw);
 canvas.addEventListener('mouseout', finishedPosition);
 
