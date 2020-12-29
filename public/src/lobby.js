@@ -28,7 +28,6 @@ const onStart = (socket) => (e) => {
 
 //Handle switching pages for all users
 const doStart = () => {
-    console.log("here")
     document.getElementById('username').value = username
     document.getElementById('room').value = room
     document.getElementById('info-form').submit()

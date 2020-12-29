@@ -15,12 +15,11 @@ const ctx = canvas.getContext('2d');
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms)); // Asynchronous sleep
 
-
 var rect = canvas.getBoundingClientRect();
 
 let data = new Queue();
 
-let painting = false;
+let painting = false && isDraw;
 
 async function startPosition(e) {
     if (painting === false) {
@@ -91,9 +90,11 @@ async function draw_queue() {
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", () => {
     finishedPosition()
-    
+    // if (isDraw) {
+    //     socket.emit("finished turn")
+    //     isDraw = false
+    // }
 });
 canvas.addEventListener("mousemove", draw);
 canvas.addEventListener('mouseout', finishedPosition);
-
 setInterval(draw_queue, 1);
