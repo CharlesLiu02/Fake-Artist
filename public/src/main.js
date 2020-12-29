@@ -30,8 +30,7 @@ socket.on('room users', ({room, users}) => {
 
 // Start turn
 socket.on('start turn', (user) => {
-    console.log(user.username)
-    const userList = document.getElementsByTagName("li")
+    const userList = document.getElementById("players").getElementsByTagName("li")
     // Resetting highlight
     for (let i = 0; i < userList.length; i++) {
         userList[i].style.border = "none"
@@ -41,7 +40,7 @@ socket.on('start turn', (user) => {
     }
     // Highlighting current user
     for (let i = 0; i < userList.length; i++) {
-        if (userList[i].value === user.username) {
+        if (userList[i].innerText === user.username) {
             userList[i].style.border = "2px solid red"
         }
     }

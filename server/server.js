@@ -87,6 +87,7 @@ io.on('connection', (socket) => {
         const index = roomToTurns.get(users[0].room) - 1
         if (index >= 0) {
             const currentUser = users[index % (users.length)]
+            console.log(index, currentUser.username)
             roomToTurns.set(currentUser.room, roomToTurns.get(currentUser.room) + 1)
             io.to(currentUser.room).emit('start turn', currentUser)
         } else {
