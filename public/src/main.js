@@ -33,7 +33,7 @@ socket.on('start turn', (user) => {
     const userList = document.getElementById("players").getElementsByTagName("li")
     // Resetting highlight
     for (let i = 0; i < userList.length; i++) {
-        userList[i].style.border = "none"
+        userList[i].style.backgroundColor = "#83d4ec"
     }
     if (user.username === username) {
         isDraw = true
@@ -41,7 +41,7 @@ socket.on('start turn', (user) => {
     // Highlighting current user
     for (let i = 0; i < userList.length; i++) {
         if (userList[i].innerText === user.username) {
-            userList[i].style.border = "2px solid red"
+            userList[i].style.backgroundColor = "#e0ffdd"
         }
     }
 })
