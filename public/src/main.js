@@ -9,6 +9,17 @@ const displayUsers = (users) => {
         ${users.map((user) => `<li>${user.username}</li>`).join('')}`
 }
 
+function togglePopup(){
+    document.getElementById("popup-1").classList.toggle("active");
+}
+
+const submitWord = (e) => {
+    e.preventDefault()
+    const word = document.getElementById('word-form-input').value
+    togglePopup()
+    socket.emit('submit word', word)
+}
+
 const socket = io()
 var isDraw = false
 
@@ -27,10 +38,25 @@ socket.on('get host', (host) => {
     }
 })
 
-// Set up category, word
+// Set up category
 socket.emit('set up')
 socket.on('set up', (info) => {
     document.getElementById('category').innerText = info.category
+})
+
+// Set up word
+socket.emit('pick word')
+socket.on('pick word', (currentPicker) => {
+    console.log(currentPicker, username)
+    if (currentPicker === username) {
+        togglePopup()
+        console.log("here")
+    }
+})
+
+// Show word
+socket.on('submit word', (word) => {
+    document.getElementById('word').innerText = word
 })
 
 // Get room and users
@@ -55,3 +81,5 @@ socket.on('start turn', (user) => {
         }
     }
 })
+
+document.getElementById('submit-btn').addEventListener('click', submitWord)

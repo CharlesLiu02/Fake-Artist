@@ -6,6 +6,7 @@
     <title>Fake Artist</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/popup.css"
 </head>
 <body>
     <div id="content">
@@ -16,8 +17,8 @@
             <div id="menu">
                 <div id="info">
                     <h3>Time: <span id="time">Placeholder</span></h3>
-                    <h3>Category: <span id="category">Placeholder</span></h3>
-                    <h3>Word: <span id="word">Placeholder</span></h3>
+                    <h3>Category: <span id="category"></span></h3>
+                    <h3>Word: <span id="word"></span></h3>
                 </div>
                 <div id="game-controls">
                     <button id="reset-btn">Reset</button>
@@ -47,6 +48,16 @@
                 placeholder="Enter Message"
                 autocomplete="off"/>
                 <button class="send-btn"><i class="fas fa-paper-plane"></i> Send</button>
+            </form>
+        </div>
+    </div>
+    <div class="popup" id="popup-1">
+        <div class="overlay"></div>
+        <div class="choose-word">
+            <h2>Choose a word in the category</h2>
+            <form id="word-form">
+                <input id="word-form-input" autocomplete="off" title="word-form-input"/>
+                <button id="submit-btn">Submit</button>
             </form>
         </div>
     </div>
