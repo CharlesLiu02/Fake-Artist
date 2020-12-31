@@ -1,9 +1,11 @@
 #content {
     align-content: center;
     display: grid;
-    grid-template-columns: 20% 60% 20%;
-    grid-template-rows: auto 0.9fr 0.1fr;
-    height: 95vh;
+    grid-template-columns: 325px 700px 325px;
+    grid-template-rows: auto 475px 0.1fr;
+    min-width: 0;
+    max-width: 1350px;
+    margin: auto;
 }
 
 #header-container {
@@ -87,7 +89,7 @@
 }
 
 canvas {
-    width: 100%;
+    max-width: 100%;
     border: 2px red solid;
 }
 

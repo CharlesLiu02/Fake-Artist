@@ -1,8 +1,8 @@
 const canvas = document.querySelector('canvas')
-const {width} = canvas.getBoundingClientRect()
-canvas.width = width
-const heightRatio = 0.698
-canvas.height = canvas.width * heightRatio
+// const {width} = canvas.getBoundingClientRect()
+// canvas.width = width
+// const heightRatio = 0.698
+// canvas.height = canvas.width * heightRatio
 
 // const resizeCanvas = (e) => {
 //     const {width} = canvas.getBoundingClientRect()
