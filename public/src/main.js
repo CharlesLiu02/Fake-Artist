@@ -21,6 +21,16 @@ socket.on('get host', (host) => {
     if (host[0].username === username) {
         socket.emit('finished turn')
     }
+    const startBtn = document.getElementById("start-btn")
+    if (startBtn && host[0].username !== username) {
+        startBtn.style.display = "none"
+    }
+})
+
+// Set up category, word
+socket.emit('set up')
+socket.on('set up', (info) => {
+    document.getElementById('category').innerText = info.category
 })
 
 // Get room and users

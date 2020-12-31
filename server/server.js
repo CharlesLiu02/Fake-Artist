@@ -7,6 +7,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 const formatMessage = require("../utils/messages");
 const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require("../utils/users")
+const {randomInteger} = require("../utils/info")
 
 const PORT = process.env.PORT || 8080
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 const botName = ''
 
 const roomToTurns = new Map()
+const roomToCategories = new Map()
 
 // socket.emit -> single socket
 // io.emit -> all sockets
@@ -38,6 +40,10 @@ io.on('connection', (socket) => {
 
         socket.join(user.room)
         roomToTurns.set(room, 0)
+        // Change to add more initial categories
+        const initialCategoriesList = ["Animals", "Household Objects", "Food"]
+
+        roomToCategories.set(room, initialCategoriesList)
 
         //Welcome current user
         socket.emit('message', formatMessage(botName, "Welcome to Fake Artist!"))
@@ -58,7 +64,14 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('message', formatMessage(user.username, text))
     })
 
-    // socket.on('add category', (text) => io.emit('add category', text))
+    socket.on('add category', (text) => {
+        const user = getCurrentUser(socket.id)
+        var roomCategories = roomToCategories.get(user.room)
+        roomCategories.push(text)
+        roomToCategories.set(user.room, roomCategories)
+        io.emit('add category', text)
+    })
+
     socket.on('start game', () => io.to(getCurrentUser(socket.id).room).emit('start game'))
     socket.on('room users', () => {
         const user = getCurrentUser(socket.id)
@@ -68,9 +81,22 @@ io.on('connection', (socket) => {
         })
     })
 
+    // Handling setting up host
     socket.on('get host', () => {
         const users = getRoomUsers(getCurrentUser(socket.id).room)
         io.to(getCurrentUser(socket.id).room).emit('get host', users.filter((user) => user.isHost))
+    })
+
+    // Handling setting up initial info
+    socket.on('set up', () => {
+        const room = getCurrentUser(socket.id).room
+        const categories = roomToCategories.get(room)
+        const category = categories[randomInteger(0, categories.length - 1)]
+        info = {
+            category: category
+            // TODO: choose word
+        }
+        io.to(room).emit('set up', info)
     })
 
     socket.on('finished turn', () => {

@@ -49,6 +49,19 @@ const socket = io()
 // Join room
 socket.emit('join room', {username, room})
 
+socket.emit('get host')
+socket.on('get host', (host) => {
+    if (host[0].username === username) {
+        socket.emit('finished turn')
+    }
+    const startBtn = document.getElementById("start-btn")
+    const customCategories = document.getElementById("custom-categories")
+    if (startBtn && host[0].username !== username) {
+        startBtn.style.display = "none"
+        customCategories.style.display = "none"
+    }
+})
+
 // Get room and users
 socket.on('room users', ({room, users}) => {
    displayRoomCode(room) 
@@ -57,7 +70,7 @@ socket.on('room users', ({room, users}) => {
 
 socket.on('start game', doStart)
 
-// socket.on('add category', log)
+socket.on('add category', log)
 
-// document.querySelector('#custom-form').addEventListener('submit', onCategorySubmitted(socket))
+document.querySelector('#custom-form').addEventListener('submit', onCategorySubmitted(socket))
 document.getElementById('start-btn').addEventListener('click', onStart(socket))
