@@ -7,7 +7,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 const formatMessage = require("../utils/messages");
 const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require("../utils/users")
-const {randomInteger} = require("../utils/info")
+const randomInteger = require("../utils/info")
 
 const PORT = process.env.PORT || 8080
 
