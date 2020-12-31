@@ -1,19 +1,8 @@
 const canvas = document.querySelector('canvas')
-const {width} = canvas.getBoundingClientRect()
-canvas.width = width
-const heightRatio = 0.698
-canvas.height = canvas.width * heightRatio
-
-// const resizeCanvas = (e) => {
-//     const {width} = canvas.getBoundingClientRect()
-//     canvas.width = width
-//     const heightRatio = 0.67
-//     canvas.height = canvas.width * heightRatio
-// }
 
 const ctx = canvas.getContext('2d');
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms)); // Asynchronous sleep
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms)); // Asynchronous sleep
 
 var rect = canvas.getBoundingClientRect();
 
@@ -32,7 +21,7 @@ async function startPosition(e) {
                 'start': true
             });
         }
-        await sleep(10);
+        await sleep(1);
         painting = true;
     }
 }
@@ -55,16 +44,16 @@ async function draw(e) {
 
         delta['x1'] = e.clientX - rect.left;
         delta['y1'] = e.clientY - rect.top;
-        ctx.lineTo(delta['x1'], delta['y1']);
-        ctx.stroke();
-        ctx.beginPath();
+        // ctx.lineTo(delta['x1'], delta['y1']);
+        // ctx.stroke();
+        // ctx.beginPath();
         delta['x2'] = e.clientX - rect.left;
         delta['y2'] = e.clientY - rect.top;
-        ctx.moveTo(delta['x2'], delta['y2']);
+        // ctx.moveTo(delta['x2'], delta['y2']);
 
         socket.emit('draw', delta);
 
-        await sleep(10);
+        await sleep(1);
     }
 }
 

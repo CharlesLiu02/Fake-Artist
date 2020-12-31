@@ -85,6 +85,7 @@ io.on('connection', (socket) => {
     socket.on('get host', () => {
         const users = getRoomUsers(getCurrentUser(socket.id).room)
         io.to(getCurrentUser(socket.id).room).emit('get host', users.filter((user) => user.isHost))
+        console.log(users.filter((user) => user.isHost))
     })
 
     // Handling setting up initial info
