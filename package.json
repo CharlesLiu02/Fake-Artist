@@ -2,9 +2,9 @@
     "name": "fake-artist",
     "version": "0.0.1",
     "description": "A Fake Artist Goes To New York",
-    "main": "server.js",
+    "main": "server/server.js",
     "scripts": {
-        "start": "node server.js",
+        "start": "node server/server.js",
         "dev": "nodemon server/server.js"
     },
     "repository": {
@@ -12,6 +12,9 @@
         "url": "https://github.com/CharlesLiu02/Fake-Artist.git"
     },
     "author": "Charles Liu <cliu2002@berkeley.edu>",
+    "engines": {
+        "node": "15.4.0"
+    },
     "dependencies": {
         "express": "^4.17.1",
         "socket.io": "^3.0.4"
