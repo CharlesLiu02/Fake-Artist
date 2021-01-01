@@ -55,9 +55,11 @@ socket.on('pick word', (currentPicker) => {
 })
 
 // Show word
-socket.on('submit word', (word) => {
-    document.getElementById('word').innerText = word
+socket.on('submit word', () => {
+    socket.emit('display word')
 })
+
+socket.on('display word', (word) => document.getElementById('word').innerText = word)
 
 // Get room and users
 socket.on('room users', ({room, users}) => {

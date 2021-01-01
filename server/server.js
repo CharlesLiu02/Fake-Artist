@@ -27,6 +27,7 @@ const botName = ''
 const roomToTurns = new Map()
 const roomToCategories = new Map()
 const roomToUsers = new Map()
+const roomToWord = new Map()
 
 // socket.emit -> single socket
 // io.emit -> all sockets
@@ -122,7 +123,39 @@ io.on('connection', (socket) => {
         }
     })
 
-    socket.on('submit word', (word) => io.to(getCurrentUser(socket.id).room).emit('submit word', word))
+    socket.on('submit word', (word) => {
+        const room = getCurrentUser(socket.id).room
+        if (!roomToWord.get(room)) {
+            const numUsers = getRoomUsers(getCurrentUser(socket.id).room).length  
+            const wordList = []
+            for (let i = 0; i < numUsers; i++) {
+                wordList.push(word)
+            }
+            if (numUsers < 7) {
+                const index = randomInteger(0, numUsers)
+                wordList[index] = 'X'
+            } else {
+                const index1 = randomInteger(0, numUsers)
+                const index2 = randomInteger(0, numUsers)
+                while (index2 === index1) {
+                    index2 = randomInteger(0, numUsers)
+                }
+                wordList[index1] = 'X'
+                wordList[index2] = 'X'
+            }
+            roomToWord.set(room, wordList)
+        }
+        io.to(room).emit('submit word')
+    })
+
+    socket.on('display word', () => {
+        const room = getCurrentUser(socket.id).room
+        const newWordList = roomToWord.get(room)
+        const userWord = newWordList.splice(0, 1)
+        console.log(userWord)
+        roomToWord.set(room, newWordList)
+        io.to(socket.id).emit('display word', userWord)
+    })
 
     socket.on('finished turn', () => {
         //update turn number and send start turn to corresponding room with the right user based on which turn
