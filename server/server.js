@@ -29,6 +29,7 @@ const roomToCategories = new Map()
 const roomToUsers = new Map()
 const roomToWord = new Map()
 const roomToChooser = new Map()
+const roomToPicked = new Map()
 
 // socket.emit -> single socket
 // io.emit -> all sockets
@@ -106,7 +107,6 @@ io.on('connection', (socket) => {
         const category = categories[randomInteger(0, categories.length - 1)]
         info = {
             category: category
-            // TODO: choose word
         }
         io.to(room).emit('set up', info)
     })
@@ -115,10 +115,11 @@ io.on('connection', (socket) => {
     socket.on('pick word', () => {
         const user = getCurrentUser(socket.id)
         var roomUsers = roomToUsers.get(user.room)
-        if (user.username === roomUsers[0]) {
-            const currentPicker = roomUsers.splice(roomUsers.length - 1, 1)[0]
+        if (!roomToPicked.get(user.room) && user.username === roomUsers[0]) {
+            roomToPicked.set(user.room, true)
+            const currentPicker = roomUsers.splice(0, 1)[0]
             roomToUsers.set(user.room, roomUsers)
-            console.log("current picker", currentPicker)
+            console.log("current picker: ", currentPicker, "user: ", user.username)
 
             io.to(socket.id).emit('pick word')
         }
