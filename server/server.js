@@ -28,6 +28,7 @@ const roomToTurns = new Map()
 const roomToCategories = new Map()
 const roomToUsers = new Map()
 const roomToWord = new Map()
+const roomToChooser = new Map()
 
 // socket.emit -> single socket
 // io.emit -> all sockets
@@ -95,7 +96,7 @@ io.on('connection', (socket) => {
     socket.on('get host', () => {
         const users = getRoomUsers(getCurrentUser(socket.id).room)
         io.to(getCurrentUser(socket.id).room).emit('get host', users.filter((user) => user.isHost))
-        console.log(users.filter((user) => user.isHost).username)
+        console.log("host", users.filter((user) => user.isHost).username)
     })
 
     // Handling setting up initial info
@@ -117,16 +118,20 @@ io.on('connection', (socket) => {
         if (user.username === roomUsers[0]) {
             const currentPicker = roomUsers.splice(roomUsers.length - 1, 1)[0]
             roomToUsers.set(user.room, roomUsers)
-            console.log(currentPicker)
+            console.log("current picker", currentPicker)
 
-            io.to(getCurrentUser(socket.id).room).emit('pick word', (currentPicker))
+            io.to(socket.id).emit('pick word')
         }
     })
 
-    socket.on('submit word', (word) => {
+    socket.on('submit word', ({word, username}) => {
         const room = getCurrentUser(socket.id).room
+        if (!roomToChooser.get(room) || roomToChooser.get(room) === {}) {
+            const chooser = {word: word, username: username}
+            roomToChooser.set(room, chooser)
+        }
         if (!roomToWord.get(room)) {
-            const numUsers = getRoomUsers(getCurrentUser(socket.id).room).length  
+            const numUsers = getRoomUsers(getCurrentUser(socket.id).room).length - 1 
             const wordList = []
             for (let i = 0; i < numUsers; i++) {
                 wordList.push(word)
@@ -149,12 +154,16 @@ io.on('connection', (socket) => {
     })
 
     socket.on('display word', () => {
-        const room = getCurrentUser(socket.id).room
-        const newWordList = roomToWord.get(room)
-        const userWord = newWordList.splice(0, 1)
-        console.log(userWord)
-        roomToWord.set(room, newWordList)
-        io.to(socket.id).emit('display word', userWord)
+        const user = getCurrentUser(socket.id)
+        const chooser = roomToChooser.get(user.room)
+        if (user.username === chooser.username) {
+            io.to(socket.id).emit('display word', chooser.word)
+        } else {
+            const newWordList = roomToWord.get(user.room)
+            const userWord = newWordList.splice(0, 1)
+            roomToWord.set(user.room, newWordList)
+            io.to(socket.id).emit('display word', userWord)
+        }
     })
 
     socket.on('finished turn', () => {
@@ -177,8 +186,8 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         const user = userLeave(socket.id)
-        roomToUsers.set(user.room, getRoomUsers(user.room))
         if (user) {
+            roomToUsers.set(user.room, getRoomUsers(user.room))
             io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the game`))
             // Send users and room info
             io.to(user.room).emit('room users', {

@@ -17,7 +17,7 @@ const submitWord = (e) => {
     e.preventDefault()
     const word = document.getElementById('word-form-input').value
     togglePopup()
-    socket.emit('submit word', word)
+    socket.emit('submit word', {word, username})
 }
 
 const socket = io()
@@ -38,7 +38,7 @@ socket.on('get host', (host) => {
     }
 })
 
-// Set up category
+// Set up category and player color
 socket.emit('set up')
 socket.on('set up', (info) => {
     document.getElementById('category').innerText = info.category
@@ -46,12 +46,9 @@ socket.on('set up', (info) => {
 
 // Set up word
 socket.emit('pick word')
-socket.on('pick word', (currentPicker) => {
-    console.log(currentPicker, username)
-    if (currentPicker === username) {
-        togglePopup()
-        console.log("here")
-    }
+socket.on('pick word', () => {
+    togglePopup()
+    console.log("here")
 })
 
 // Show word
@@ -71,7 +68,8 @@ socket.on('start turn', (user) => {
     const userList = document.getElementById("players").getElementsByTagName("li")
     // Resetting highlight
     for (let i = 0; i < userList.length; i++) {
-        userList[i].style.backgroundColor = "#83d4ec"
+        userList[i].style.color = "black"
+        userList[i].style.fontWeight = "normal"
     }
     if (user.username === username) {
         isDraw = true
@@ -79,7 +77,9 @@ socket.on('start turn', (user) => {
     // Highlighting current user
     for (let i = 0; i < userList.length; i++) {
         if (userList[i].innerText === user.username) {
-            userList[i].style.backgroundColor = "#e0ffdd"
+            userList[i].style.color = "blue"
+            userList[i].style.fontWeight = "bold"
+            break
         }
     }
 })
