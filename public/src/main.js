@@ -70,7 +70,7 @@ socket.on('start turn', (user) => {
     // Highlighting current user
     for (let i = 0; i < userList.length; i++) {
         if (userList[i].innerText === user.username) {
-            console.log(userList[i].innerText, user.username)
+            console.log(userList[i].innerText)
             userList[i].style.color = "blue"
             userList[i].style.fontWeight = "bold"
             break

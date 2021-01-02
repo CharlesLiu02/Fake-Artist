@@ -7,7 +7,11 @@ const outputMessage = (text) => {
         elem.innerHTML = text.text
         elem.style = "color: blue;"
     } else {
-        elem.innerHTML = text.username + ": " + text.text.trim()
+        const span = document.createElement('span')
+        span.style.fontWeight = "bold"
+        span.innerHTML = text.username + ": "
+        elem.appendChild(span)
+        elem.innerHTML = elem.innerHTML + text.text.trim()
     }
     parent.appendChild(elem)
     elem.scrollIntoView()
