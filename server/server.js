@@ -145,7 +145,7 @@ io.on('connection', (socket) => {
                 wordList.push(word)
             }
             if (numUsers < 7) {
-                const index = randomInteger(0, numUsers)
+                const index = randomInteger(0, numUsers - 1)
                 wordList[index] = 'X'
             } else {
                 const index1 = randomInteger(0, numUsers)
@@ -170,6 +170,7 @@ io.on('connection', (socket) => {
             const newWordList = roomToWord.get(user.room)
             const userWord = newWordList.splice(0, 1)
             roomToWord.set(user.room, newWordList)
+            console.log(newWordList)
             io.to(socket.id).emit('display word', userWord)
         }
     })
