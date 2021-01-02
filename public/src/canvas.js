@@ -21,7 +21,7 @@ async function startPosition(e) {
                 'start': true
             });
         }
-        await sleep(1);
+        await sleep(10);
         painting = true;
     }
 }
@@ -53,7 +53,7 @@ async function draw(e) {
 
         socket.emit('draw', delta);
 
-        await sleep(1);
+        await sleep(10);
     }
 }
 
@@ -94,4 +94,4 @@ canvas.addEventListener("mouseup", () => {
 });
 canvas.addEventListener("mousemove", draw);
 canvas.addEventListener('mouseout', finishedPosition);
-setInterval(draw_queue, 1);
+setInterval(draw_queue, 10);
