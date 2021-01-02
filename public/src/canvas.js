@@ -85,8 +85,10 @@ async function draw_queue() {
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", () => {
     finishedPosition()
-    socket.emit("finished turn")
-    isDraw = false
+    if (isDraw) {
+        socket.emit("finished turn")
+        isDraw = false
+    }
 })
 canvas.addEventListener("mousemove", draw);
 canvas.addEventListener('mouseout', finishedPosition);

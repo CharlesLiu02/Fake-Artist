@@ -111,7 +111,6 @@ io.on('connection', (socket) => {
     socket.on('set up', () => {
         const room = getCurrentUser(socket.id).room
         const categories = roomToCategories.get(room)
-        console.log(roomToCategories)
         const category = categories[randomInteger(0, categories.length - 1)]
         info = {
             category: category
@@ -179,10 +178,9 @@ io.on('connection', (socket) => {
         //update turn number and send start turn to corresponding room with the right user based on which turn
         const users = getRoomUsers(getCurrentUser(socket.id).room)
         const index = roomToTurns.get(users[0].room)
-        console.log(index)
         // if (index >= 0) {
             const currentUser = users[index % (users.length)]
-            // console.log(index, currentUser.username)
+            console.log(index, currentUser.username)
             roomToTurns.set(currentUser.room, roomToTurns.get(currentUser.room) + 1)
             io.to(currentUser.room).emit('start turn', currentUser)
         // } else {
