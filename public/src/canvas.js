@@ -21,7 +21,7 @@ async function startPosition(e) {
                 'start': true
             });
         }
-        await sleep(10);
+        await sleep(1);
         painting = true;
     }
 }
@@ -53,7 +53,7 @@ async function draw(e) {
 
         socket.emit('draw', delta);
 
-        await sleep(10);
+        await sleep(1);
     }
 }
 
@@ -62,36 +62,32 @@ socket.on('draw', in_delta => {
 })
 
 async function draw_queue() {
-    if (isDraw) {
-        if (data.isEmpty()) return;
-        
-        let in_delta = data.dequeue();
-        let x1 = in_delta['x1'];
-        let y1 = in_delta['y1'];
-        let x2 = in_delta['x2'];
-        let y2 = in_delta['y2'];
-        let start = in_delta['start'];
-        if (start) {
-            ctx.moveTo(x2, y2);
-            ctx.beginPath();
-        }
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.lineTo(x1, y1);
-        ctx.stroke();
-        ctx.beginPath();
+    if (data.isEmpty()) return;
+    
+    let in_delta = data.dequeue();
+    let x1 = in_delta['x1'];
+    let y1 = in_delta['y1'];
+    let x2 = in_delta['x2'];
+    let y2 = in_delta['y2'];
+    let start = in_delta['start'];
+    if (start) {
         ctx.moveTo(x2, y2);
+        ctx.beginPath();
     }
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
 }
 
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", () => {
     finishedPosition()
-    if (isDraw) {
-        socket.emit("finished turn")
-        isDraw = false
-    }
-});
+    socket.emit("finished turn")
+    isDraw = false
+})
 canvas.addEventListener("mousemove", draw);
 canvas.addEventListener('mouseout', finishedPosition);
-setInterval(draw_queue, 10);
+setInterval(draw_queue, 1);

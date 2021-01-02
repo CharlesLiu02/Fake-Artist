@@ -51,15 +51,20 @@ socket.emit('join room', {username, room})
 
 socket.emit('get host')
 socket.on('get host', (host) => {
-    if (host[0].username === username) {
-        socket.emit('finished turn')
-    }
+    // if (host[0].username === username) {
+    //     socket.emit('finished turn')
+    // }
+    // const startBtn = document.getElementById("start-btn")
+    // const customCategories = document.getElementById("custom-categories")
+    // if (startBtn && host[0].username !== username) {
+    //     startBtn.style.display = "none"
+    //     customCategories.style.display = "none"
+    // }
     const startBtn = document.getElementById("start-btn")
     const customCategories = document.getElementById("custom-categories")
-    if (startBtn && host[0].username !== username) {
-        startBtn.style.display = "none"
-        customCategories.style.display = "none"
-    }
+    startBtn.style.display = "block"
+    customCategories.style.display = "block"
+
 })
 
 // Get room and users

@@ -28,14 +28,8 @@ socket.emit('join room', {username, room})
 
 // Start the game if host
 socket.emit('get host')
-socket.on('get host', (host) => {
-    if (host[0].username === username) {
-        socket.emit('finished turn')
-    }
-    const startBtn = document.getElementById("start-btn")
-    if (startBtn && host[0].username !== username) {
-        startBtn.style.display = "none"
-    }
+socket.on('get host', () => {
+    socket.emit('finished turn')
 })
 
 // Set up category and player color

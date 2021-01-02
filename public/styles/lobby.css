@@ -10,7 +10,12 @@
 }
 
 #start-btn {
+    display: none;
     margin: 0 auto;
+}
+
+#custom-categories {
+    display: none;
 }
 
 #room-code {

@@ -30,17 +30,17 @@ const roomToUsers = new Map()
 const roomToWord = new Map()
 const roomToChooser = new Map()
 const roomToPicked = new Map()
+const roomToHost = new Map()
 
 // socket.emit -> single socket
 // io.emit -> all sockets
 // socket.broadcast.emit -> all sockets besides the current one
 io.on('connection', (socket) => {
     socket.on('join room', ({username, room}) => {
-        var isHost = false
-        if (getRoomUsers(room).length === 0) {
-            isHost = true
+        if (!roomToHost.get(room)) {
+            roomToHost.set(room, username)
         }
-        const user = userJoin(socket.id, username, room, isHost)
+        const user = userJoin(socket.id, username, room)
 
         var roomUsers = roomToUsers.get(room)
         if (!roomUsers) {
@@ -95,9 +95,11 @@ io.on('connection', (socket) => {
 
     // Handling setting up host
     socket.on('get host', () => {
-        const users = getRoomUsers(getCurrentUser(socket.id).room)
-        io.to(getCurrentUser(socket.id).room).emit('get host', users.filter((user) => user.isHost))
-        console.log("host", users.filter((user) => user.isHost).username)
+        const user = getCurrentUser(socket.id)
+        if (user.username === roomToHost.get(user.room)) {
+            console.log("host: ", user.username)
+            io.to(socket.id).emit('get host')
+        }
     })
 
     // Handling setting up initial info
@@ -171,9 +173,10 @@ io.on('connection', (socket) => {
         //update turn number and send start turn to corresponding room with the right user based on which turn
         const users = getRoomUsers(getCurrentUser(socket.id).room)
         const index = roomToTurns.get(users[0].room) - 1
+        console.log(index)
         if (index >= 0) {
             const currentUser = users[index % (users.length)]
-            console.log(index, currentUser.username)
+            // console.log(index, currentUser.username)
             roomToTurns.set(currentUser.room, roomToTurns.get(currentUser.room) + 1)
             io.to(currentUser.room).emit('start turn', currentUser)
         } else {
