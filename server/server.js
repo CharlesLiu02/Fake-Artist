@@ -53,8 +53,12 @@ io.on('connection', (socket) => {
         socket.join(user.room)
         roomToTurns.set(room, 0)
         // Change to add more initial categories
-        const initialCategoriesList = ["Animals", "Household Objects", "Food"]
-
+        var initialCategoriesList
+        if (!roomToCategories.get(room)) {
+            initialCategoriesList = ["Animals", "Household Objects", "Food"]
+        } else {
+            initialCategoriesList = roomToCategories.get(room)
+        }
         roomToCategories.set(room, initialCategoriesList)
 
         //Welcome current user
@@ -81,6 +85,7 @@ io.on('connection', (socket) => {
         var roomCategories = roomToCategories.get(user.room)
         roomCategories.push(text)
         roomToCategories.set(user.room, roomCategories)
+        console.log(roomToCategories)
         io.emit('add category', text)
     })
 
@@ -106,6 +111,7 @@ io.on('connection', (socket) => {
     socket.on('set up', () => {
         const room = getCurrentUser(socket.id).room
         const categories = roomToCategories.get(room)
+        console.log(roomToCategories)
         const category = categories[randomInteger(0, categories.length - 1)]
         info = {
             category: category
@@ -172,16 +178,16 @@ io.on('connection', (socket) => {
     socket.on('finished turn', () => {
         //update turn number and send start turn to corresponding room with the right user based on which turn
         const users = getRoomUsers(getCurrentUser(socket.id).room)
-        const index = roomToTurns.get(users[0].room) - 1
+        const index = roomToTurns.get(users[0].room)
         console.log(index)
-        if (index >= 0) {
+        // if (index >= 0) {
             const currentUser = users[index % (users.length)]
             // console.log(index, currentUser.username)
             roomToTurns.set(currentUser.room, roomToTurns.get(currentUser.room) + 1)
             io.to(currentUser.room).emit('start turn', currentUser)
-        } else {
-            roomToTurns.set(getCurrentUser(socket.id).room, roomToTurns.get(getCurrentUser(socket.id).room) + 1)
-        }
+        // } else {
+        //     roomToTurns.set(getCurrentUser(socket.id).room, roomToTurns.get(getCurrentUser(socket.id).room) + 1)
+        // }
     })
 
     socket.on('draw', (data) => {

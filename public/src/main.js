@@ -42,7 +42,6 @@ socket.on('set up', (info) => {
 socket.emit('pick word')
 socket.on('pick word', () => {
     togglePopup()
-    console.log("here")
 })
 
 // Show word
