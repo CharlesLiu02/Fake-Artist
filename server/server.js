@@ -31,6 +31,8 @@ const roomToWord = new Map()
 const roomToChooser = new Map()
 const roomToPicked = new Map()
 const roomToHost = new Map()
+const roomToVotes = new Map()
+const roomToFakeArtist = new Map()
 
 // socket.emit -> single socket
 // io.emit -> all sockets
@@ -52,6 +54,7 @@ io.on('connection', (socket) => {
 
         socket.join(user.room)
         roomToTurns.set(room, 0)
+        roomToVotes.set(room, new Map())
         // Change to add more initial categories
         var initialCategoriesList
         if (!roomToCategories.get(room)) {
@@ -144,18 +147,21 @@ io.on('connection', (socket) => {
             for (let i = 0; i < numUsers; i++) {
                 wordList.push(word)
             }
-            if (numUsers < 7) {
-                const index = randomInteger(0, numUsers - 1)
-                wordList[index] = 'X'
-            } else {
-                const index1 = randomInteger(0, numUsers)
-                const index2 = randomInteger(0, numUsers)
-                while (index2 === index1) {
-                    index2 = randomInteger(0, numUsers)
-                }
-                wordList[index1] = 'X'
-                wordList[index2] = 'X'
-            }
+            const index = randomInteger(0, numUsers - 1)
+            wordList[index] = 'X'
+            // For 2 imposters
+            // if (numUsers < 7) {
+            //     const index = randomInteger(0, numUsers - 1)
+            //     wordList[index] = 'X'
+            // } else {
+            //     const index1 = randomInteger(0, numUsers)
+            //     const index2 = randomInteger(0, numUsers)
+            //     while (index2 === index1) {
+            //         index2 = randomInteger(0, numUsers)
+            //     }
+            //     wordList[index1] = 'X'
+            //     wordList[index2] = 'X'
+            // }
             roomToWord.set(room, wordList)
         }
         io.to(room).emit('submit word')
@@ -168,9 +174,11 @@ io.on('connection', (socket) => {
             io.to(socket.id).emit('display word', chooser.word)
         } else {
             const newWordList = roomToWord.get(user.room)
-            const userWord = newWordList.splice(0, 1)
+            const userWord = newWordList.splice(0, 1)[0]
+            if (userWord === 'X') {
+                roomToFakeArtist.set(user.room, user.username)
+            }
             roomToWord.set(user.room, newWordList)
-            console.log(newWordList)
             io.to(socket.id).emit('display word', userWord)
         }
     })
@@ -179,14 +187,44 @@ io.on('connection', (socket) => {
         //update turn number and send start turn to corresponding room with the right user based on which turn
         const users = getRoomUsers(getCurrentUser(socket.id).room)
         const index = roomToTurns.get(users[0].room)
-        // if (index >= 0) {
+        // If everyone has gone twice, start over game
+        if (index > users.length * 2 - 1) {
+            const room = getCurrentUser(socket.id).room
+            resetRoom(room)
+            io.to(users[0].room).emit('message', formatMessage(botName, "Time to Vote!"))
+            io.to(users[0].room).emit('message', formatMessage(botName, "Waiting for votes..."))
+            io.to(room).emit('start voting')
+        } else {
             const currentUser = users[index % (users.length)]
             console.log(index, currentUser.username)
             roomToTurns.set(currentUser.room, roomToTurns.get(currentUser.room) + 1)
             io.to(currentUser.room).emit('start turn', currentUser)
-        // } else {
-        //     roomToTurns.set(getCurrentUser(socket.id).room, roomToTurns.get(getCurrentUser(socket.id).room) + 1)
-        // }
+        }
+    })
+
+    socket.on('receive vote', (votedPlayer) => {
+        const room  = getCurrentUser(socket.id).room 
+        const votes = roomToVotes.get(room)
+        if (!votes.get(votedPlayer)) {
+            votes.set(votedPlayer, 1)
+        } else {
+            votes.set(votedPlayer, votes.get(votedPlayer) + 1)
+        }
+        var numUsersVoted = 0
+        for (const [key, value] of votes.entries()) {
+            numUsersVoted += value
+        }
+        if (getRoomUsers(getCurrentUser(socket.id).room).length === numUsersVoted) {
+            if (roomToFakeArtist.get(room) === Math.max(...votes.values())) {
+                io.to(room).emit('message', formatMessage(botName, "Fake Artist has been found!"))
+                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was ${roomToFakeArtist.get(room)}`))
+                // Fake Artist has opportunity to guess
+            } else {
+                io.to(room).emit('message', formatMessage(botName, "Fake Artist Wins!"))
+                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was ${roomToFakeArtist.get(room)}`))
+                // restart game
+            }
+        }
     })
 
     socket.on('draw', (data) => {
@@ -214,3 +252,10 @@ server.on('error', (err) => {
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 });
+
+const resetRoom = (room) => {
+    roomToTurns.set(room, 0)
+    roomToWord.set(room, false)
+    roomToChooser.set(room, {})
+    roomToPicked.set(room, false)
+}

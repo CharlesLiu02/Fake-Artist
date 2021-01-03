@@ -5,8 +5,15 @@ const {username, room} = Qs.parse(location.search, {
 
 const displayUsers = (users) => {
     const userList = document.querySelector('#players')
-    userList.innerHTML = `
-        ${users.map((user) => `<li>${user.username}</li>`).join('')}`
+    const displayUsers = []
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].username !== username) {
+            displayUsers.push(`<li>${users[i].username}<button value=${users[i].username} style="display: none;">Vote</button></li>`)
+        } else {
+            displayUsers.push(`<li>${users[i].username}</li>`)
+        }
+    }
+    userList.innerHTML = `${displayUsers.join('')}`
 }
 
 function togglePopup(){
@@ -20,26 +27,40 @@ const submitWord = (e) => {
     socket.emit('submit word', {word, username})
 }
 
+const sendVote = (e) => {
+    e.preventDefault()
+    const votedPlayer = e.srcElement.value
+    const voteBtns = document.getElementsByTagName('button')
+    // Hide vote buttons after voting once
+    for (let i = 0; i < voteBtns.length; i++) {
+        voteBtns[i].style.display = "none"
+    }
+    socket.emit('receive vote', votedPlayer)
+}
+
+const startGame = () => {
+    // Start the game if host
+    socket.emit('get host')
+
+    // Set up category and player color
+    socket.emit('set up')
+
+    // Set up word
+    socket.emit('pick word')
+
+}
+
 const socket = io()
 var isDraw = false
 
-// Join room
-socket.emit('join room', {username, room})
-
-// Start the game if host
-socket.emit('get host')
 socket.on('get host', () => {
     socket.emit('finished turn')
 })
 
-// Set up category and player color
-socket.emit('set up')
 socket.on('set up', (info) => {
     document.getElementById('category').innerText = info.category
 })
 
-// Set up word
-socket.emit('pick word')
 socket.on('pick word', () => {
     togglePopup()
 })
@@ -77,5 +98,19 @@ socket.on('start turn', (user) => {
         }
     }
 })
+
+// Start voting, display buttons and gather votes
+socket.on('start voting', () => {
+    const voteBtns = document.getElementsByTagName('button')
+    for (let i = 0; i < voteBtns.length; i++) {
+        voteBtns[i].style.display = "inline"
+        voteBtns[i].onclick = sendVote
+    }
+})
+
+// Join room
+socket.emit('join room', {username, room})
+
+startGame()
 
 document.getElementById('submit-btn').addEventListener('click', submitWord)
