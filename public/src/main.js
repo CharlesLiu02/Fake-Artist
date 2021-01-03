@@ -8,7 +8,7 @@ const displayUsers = (users) => {
     const displayUsers = []
     for (let i = 0; i < users.length; i++) {
         if (users[i].username !== username) {
-            displayUsers.push(`<li>${users[i].username}<button value=${users[i].username} style="display: none;">Vote</button></li>`)
+            displayUsers.push(`<li>${users[i].username}<button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button></li>`)
         } else {
             displayUsers.push(`<li>${users[i].username}</li>`)
         }
@@ -30,7 +30,7 @@ const submitWord = (e) => {
 const sendVote = (e) => {
     e.preventDefault()
     const votedPlayer = e.srcElement.value
-    const voteBtns = document.getElementsByTagName('button')
+    const voteBtns = document.getElementsByClassName('vote-btn')
     // Hide vote buttons after voting once
     for (let i = 0; i < voteBtns.length; i++) {
         voteBtns[i].style.display = "none"
@@ -101,7 +101,7 @@ socket.on('start turn', (user) => {
 
 // Start voting, display buttons and gather votes
 socket.on('start voting', () => {
-    const voteBtns = document.getElementsByTagName('button')
+    const voteBtns = document.getElementsByClassName('vote-btn')
     for (let i = 0; i < voteBtns.length; i++) {
         voteBtns[i].style.display = "inline"
         voteBtns[i].onclick = sendVote

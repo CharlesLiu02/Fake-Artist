@@ -105,7 +105,6 @@ io.on('connection', (socket) => {
     socket.on('get host', () => {
         const user = getCurrentUser(socket.id)
         if (user.username === roomToHost.get(user.room)) {
-            console.log("host: ", user.username)
             io.to(socket.id).emit('get host')
         }
     })
@@ -217,11 +216,11 @@ io.on('connection', (socket) => {
         if (getRoomUsers(getCurrentUser(socket.id).room).length === numUsersVoted) {
             if (roomToFakeArtist.get(room) === Math.max(...votes.values())) {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist has been found!"))
-                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was ${roomToFakeArtist.get(room)}`))
+                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}"`))
                 // TODO: Fake Artist has opportunity to guess
             } else {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist Wins!"))
-                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was ${roomToFakeArtist.get(room)}`))
+                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}"`))
                 // restart game
                 nextRound(room)
             }
