@@ -218,11 +218,12 @@ io.on('connection', (socket) => {
             if (roomToFakeArtist.get(room) === Math.max(...votes.values())) {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist has been found!"))
                 io.to(room).emit('message', formatMessage(botName, `The Fake Artist was ${roomToFakeArtist.get(room)}`))
-                // Fake Artist has opportunity to guess
+                // TODO: Fake Artist has opportunity to guess
             } else {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist Wins!"))
                 io.to(room).emit('message', formatMessage(botName, `The Fake Artist was ${roomToFakeArtist.get(room)}`))
                 // restart game
+                nextRound(room)
             }
         }
     })
@@ -256,6 +257,12 @@ server.listen(PORT, () => {
 const resetRoom = (room) => {
     roomToTurns.set(room, 0)
     roomToWord.set(room, false)
-    roomToChooser.set(room, {})
+    roomToChooser.set(room, false)
     roomToPicked.set(room, false)
+}
+
+const nextRound = (room) => {
+    roomToVotes.set(room, new Map())
+    io.to(room).emit('message', formatMessage(botName, "New round! Word picker please choose your word."))
+    io.to(room).emit('start next round')
 }

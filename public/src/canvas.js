@@ -82,6 +82,10 @@ async function draw_queue() {
     ctx.moveTo(x2, y2);
 }
 
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", () => {
     finishedPosition()

@@ -16,7 +16,7 @@ const displayUsers = (users) => {
     userList.innerHTML = `${displayUsers.join('')}`
 }
 
-function togglePopup(){
+const togglePopup = () => {
     document.getElementById("popup-1").classList.toggle("active");
 }
 
@@ -106,6 +106,12 @@ socket.on('start voting', () => {
         voteBtns[i].style.display = "inline"
         voteBtns[i].onclick = sendVote
     }
+})
+
+// Start next round with new picker
+socket.on('start next round', () => {
+    clearCanvas()
+    startGame()
 })
 
 // Join room
