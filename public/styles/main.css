@@ -72,6 +72,10 @@
     list-style: none;
 }
 
+#players-title-container {
+    text-align: center;
+}
+
 .chat-wrapper {
     grid-column: 3 / 4;
     grid-row: 3 / 4;
