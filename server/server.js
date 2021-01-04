@@ -223,7 +223,9 @@ io.on('connection', (socket) => {
             numUsersVoted += value
         }
         if (getRoomUsers(getCurrentUser(socket.id).room).length === numUsersVoted) {
-            if (roomToFakeArtist.get(room) === Math.max(...votes.values())) {
+            const maxVotes = Math.max(...votes.values())
+            // If Fake Artist has the max amount of votes, they lose
+            if (roomToVotes.get(room).get(roomToFakeArtist.get(room)) === maxVotes) {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist has been found!"))
                 io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}"`))
                 // TODO: Fake Artist has opportunity to guess
