@@ -49,6 +49,7 @@ async function draw(e) {
         // ctx.beginPath();
         delta['x2'] = e.clientX - rect.left;
         delta['y2'] = e.clientY - rect.top;
+        delta['color'] = color
         // ctx.moveTo(delta['x2'], delta['y2']);
 
         socket.emit('draw', delta);
@@ -69,6 +70,7 @@ async function draw_queue() {
     let y1 = in_delta['y1'];
     let x2 = in_delta['x2'];
     let y2 = in_delta['y2'];
+    let color = in_delta['color']
     let start = in_delta['start'];
     if (start) {
         ctx.moveTo(x2, y2);
@@ -76,6 +78,7 @@ async function draw_queue() {
     }
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
+    ctx.strokeStyle = color
     ctx.lineTo(x1, y1);
     ctx.stroke();
     ctx.beginPath();

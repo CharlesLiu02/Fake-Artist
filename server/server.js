@@ -5,6 +5,7 @@ const express = require('express')
 const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server)
+const randomColor = require('randomColor')
 const formatMessage = require("../utils/messages");
 const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require("../utils/users")
 const randomInteger = require("../utils/info")
@@ -33,6 +34,7 @@ const roomToPicked = new Map()
 const roomToHost = new Map()
 const roomToVotes = new Map()
 const roomToFakeArtist = new Map()
+const roomToColor = new Map()
 
 // socket.emit -> single socket
 // io.emit -> all sockets
@@ -42,7 +44,12 @@ io.on('connection', (socket) => {
         if (!roomToHost.get(room)) {
             roomToHost.set(room, username)
         }
+        if (!roomToColor.get(room)) {
+            roomToColor.set(room, [])
+        }
         const user = userJoin(socket.id, username, room)
+
+        chooseColor(user)
 
         var roomUsers = roomToUsers.get(room)
         if (!roomUsers) {
@@ -111,13 +118,15 @@ io.on('connection', (socket) => {
 
     // Handling setting up initial info
     socket.on('set up', () => {
-        const room = getCurrentUser(socket.id).room
-        const categories = roomToCategories.get(room)
+        const user = getCurrentUser(socket.id)
+        const categories = roomToCategories.get(user.room)
         const category = categories[randomInteger(0, categories.length - 1)]
+        const colors = roomToColor.get(user.room)
         info = {
-            category: category
+            category: category,
+            colors: colors
         }
-        io.to(room).emit('set up', info)
+        io.to(user.room).emit('set up', info)
     })
 
     // Handling picking a word
@@ -234,6 +243,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const user = userLeave(socket.id)
         if (user) {
+            removeColor(user)
             roomToUsers.set(user.room, getRoomUsers(user.room))
             io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the game`))
             // Send users and room info
@@ -264,4 +274,25 @@ const nextRound = (room) => {
     roomToVotes.set(room, new Map())
     io.to(room).emit('message', formatMessage(botName, "New round! Word picker please choose your word."))
     io.to(room).emit('start next round')
+}
+
+const chooseColor = (user) => {
+    var color = randomColor()
+    const colors = roomToColor.get(user.room)
+    while (colors.includes(color)) {
+        color = randomColor()
+    }
+    colors.push({username: user.username, color: color})
+    roomToColor.set(user.room, colors)
+}
+
+const removeColor = (user) => {
+    const colors = roomToColor.get(user.room)
+    for (let i = 0; i < colors.length; i++) {
+        if (user.username === colors[i].username) {
+            colors.splice(i, 1)
+            break
+        }
+    }
+    roomToColor.set(user.room, colors)
 }

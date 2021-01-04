@@ -38,6 +38,22 @@ const sendVote = (e) => {
     socket.emit('receive vote', votedPlayer)
 }
 
+const displayColors = (colors) => {
+    const players = document.getElementById('players').getElementsByTagName('li')
+    if (!colors.length === players.length) {
+        console.log("Error: colors length and players length are different")
+        return
+    }
+    for (let i = 0; i < colors.length; i++) {
+        for (let j = 0; j < players.length; j++) {
+            if (colors[i].username === players[j].innerText) {
+                players[j].style.border = "1px black solid"
+                players[j].style.backgroundColor = colors[i].color
+            }
+        }
+    }
+}
+
 const startGame = () => {
     // Start the game if host
     socket.emit('get host')
@@ -52,6 +68,7 @@ const startGame = () => {
 
 const socket = io()
 var isDraw = false
+var color
 
 socket.on('get host', () => {
     socket.emit('finished turn')
@@ -59,6 +76,14 @@ socket.on('get host', () => {
 
 socket.on('set up', (info) => {
     document.getElementById('category').innerText = info.category
+    colors = info.colors
+    for (let i = 0; i < colors.length; i++) {
+        if (username === colors[i].username) {
+            color = colors[i].color
+            break
+        }
+    }
+    displayColors(colors)
 })
 
 socket.on('pick word', () => {
