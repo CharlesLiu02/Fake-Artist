@@ -8,9 +8,9 @@ const displayUsers = (users) => {
     const displayUsers = []
     for (let i = 0; i < users.length; i++) {
         if (users[i].username !== username) {
-            displayUsers.push(`<li>${users[i].username}<button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button></li>`)
+            displayUsers.push(`<li>${users[i].username}<button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button><div id="color-box"></div></li>`)
         } else {
-            displayUsers.push(`<li>${users[i].username}</li>`)
+            displayUsers.push(`<li>${users[i].username}<div id="color-box"></div></li>`)
         }
     }
     userList.innerHTML = `${displayUsers.join('')}`
@@ -47,8 +47,14 @@ const displayColors = (colors) => {
     for (let i = 0; i < colors.length; i++) {
         for (let j = 0; j < players.length; j++) {
             if (colors[i].username === players[j].innerText) {
-                players[j].style.border = "1px black solid"
-                players[j].style.backgroundColor = colors[i].color
+                const colorBox = players[j].querySelector("#color-box")
+                colorBox.style = "inline-block"
+                colorBox.style.width = "10px"
+                colorBox.style.height = "10px"
+                colorBox.style.border = "1px black solid"
+                colorBox.style.backgroundColor = colors[i].color
+                colorBox.style.float = "right"
+                colorBox.style.marginRight = "20px"
             }
         }
     }
@@ -116,7 +122,6 @@ socket.on('start turn', (user) => {
     // Highlighting current user
     for (let i = 0; i < userList.length; i++) {
         if (userList[i].innerText === user.username) {
-            console.log(userList[i].innerText)
             userList[i].style.color = "blue"
             userList[i].style.fontWeight = "bold"
             break
