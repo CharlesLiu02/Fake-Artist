@@ -8,9 +8,9 @@ const displayUsers = (users) => {
     const displayUsers = []
     for (let i = 0; i < users.length; i++) {
         if (users[i].username !== username) {
-            displayUsers.push(`<li>${users[i].username}<button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button><div id="color-box"></div></li>`)
+            displayUsers.push(`<li>${users[i].username}<button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button><div id="num-votes"></div><div id="color-box"></div></li>`)
         } else {
-            displayUsers.push(`<li>${users[i].username}<div id="color-box"></div></li>`)
+            displayUsers.push(`<li>${users[i].username}<div id="color-box"></div><div id="num-votes"></div></li>`)
         }
     }
     userList.innerHTML = `${displayUsers.join('')}`
@@ -40,7 +40,7 @@ const sendVote = (e) => {
 
 const displayColors = (colors) => {
     const players = document.getElementById('players').getElementsByTagName('li')
-    if (!colors.length === players.length) {
+    if (colors.length !== players.length) {
         console.log("Error: colors length and players length are different")
         return
     }
@@ -48,13 +48,12 @@ const displayColors = (colors) => {
         for (let j = 0; j < players.length; j++) {
             if (colors[i].username === players[j].innerText) {
                 const colorBox = players[j].querySelector("#color-box")
-                colorBox.style = "inline-block"
+                colorBox.style = "inline"
                 colorBox.style.width = "10px"
                 colorBox.style.height = "10px"
                 colorBox.style.border = "1px black solid"
                 colorBox.style.backgroundColor = colors[i].color
-                colorBox.style.float = "right"
-                colorBox.style.marginRight = "20px"
+                break
             }
         }
     }
@@ -136,6 +135,25 @@ socket.on('start voting', () => {
         voteBtns[i].style.display = "inline"
         voteBtns[i].onclick = sendVote
     }
+})
+
+// Show votes
+socket.on('show votes', (votes) => {
+    // const players = document.getElementById('players').getElementsByTagName('li') 
+    // for (const [username, numVotes] of votes.entries()) {
+    //     for (let j = 0; j < players.length; j++) {
+    //         if (username === players[j].innerText) {
+    //             const votesBox = players[j].querySelector("#num-votes")
+    //             votesBox.style = "inline-block"
+    //             votesBox.style.width = "10px"
+    //             votesBox.style.height = "10px"
+    //             votesBox.style.float = "right"
+    //             votesBox.style.marginRight = "40px"
+    //             votesBox.innerText = numVotes
+    //             break
+    //         }
+    //     }
+    // } 
 })
 
 // Start next round with new picker

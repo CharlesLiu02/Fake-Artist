@@ -5,7 +5,6 @@ const express = require('express')
 const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server)
-const randomColor = require('randomColor')
 const formatMessage = require("../utils/messages");
 const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require("../utils/users")
 const randomInteger = require("../utils/info")
@@ -35,6 +34,8 @@ const roomToHost = new Map()
 const roomToVotes = new Map()
 const roomToFakeArtist = new Map()
 const roomToColor = new Map()
+const allColors = ['red', 'blue', 'green', '#663399', '#8B4513', "#FF6347", 
+                    "#00FFFF", 'black', "#7FFF00", "#FF69B4"]
 
 // socket.emit -> single socket
 // io.emit -> all sockets
@@ -223,6 +224,7 @@ io.on('connection', (socket) => {
             numUsersVoted += value
         }
         if (getRoomUsers(getCurrentUser(socket.id).room).length === numUsersVoted) {
+            io.to(room).emit('show votes', votes)
             const maxVotes = Math.max(...votes.values())
             // If Fake Artist has the max amount of votes, they lose
             if (roomToVotes.get(room).get(roomToFakeArtist.get(room)) === maxVotes) {
@@ -279,13 +281,22 @@ const nextRound = (room) => {
 }
 
 const chooseColor = (user) => {
-    var color = randomColor()
+    var color = allColors[randomInteger(0, allColors.length - 1)]
     const colors = roomToColor.get(user.room)
-    while (colors.includes(color)) {
-        color = randomColor()
+    while (colorContains(colors, color)) {
+        color = allColors[randomInteger(0, allColors.length - 1)]
     }
     colors.push({username: user.username, color: color})
     roomToColor.set(user.room, colors)
+}
+
+const colorContains = (colors, color) => {
+    for (let i = 0; i < colors.length; i++) {
+        if (colors[i].color === color) {
+            return true
+        }
+    }
+    return false
 }
 
 const removeColor = (user) => {
