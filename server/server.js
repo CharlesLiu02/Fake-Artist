@@ -29,7 +29,7 @@ const roomToCategories = new Map()
 const roomToUsers = new Map()
 const roomToWord = new Map()
 const roomToChooser = new Map()
-const roomToPicked = new Map()
+const roomToPicker = new Map()
 const roomToHost = new Map()
 const roomToVotes = new Map()
 const roomToFakeArtist = new Map()
@@ -130,16 +130,21 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('set up', info)
     })
 
+    // Handling making the picker go first
+    socket.on('get first', () => {
+        const user = getCurrentUser(socket.id)
+        var roomUsers = roomToUsers.get(user.room)
+        setUpPicker(user, roomUsers)
+        if (user.username === roomToPicker.get(user.room)) {
+            io.to(socket.id).emit('get first')
+        }
+    })
+
+
     // Handling picking a word
     socket.on('pick word', () => {
         const user = getCurrentUser(socket.id)
-        var roomUsers = roomToUsers.get(user.room)
-        if (!roomToPicked.get(user.room) && user.username === roomUsers[0]) {
-            roomToPicked.set(user.room, true)
-            const currentPicker = roomUsers.splice(0, 1)[0]
-            roomToUsers.set(user.room, roomUsers)
-            console.log("current picker: ", currentPicker, "user: ", user.username)
-
+        if (user.username === roomToPicker.get(user.room)) {
             io.to(socket.id).emit('pick word')
         }
     })
@@ -196,6 +201,8 @@ io.on('connection', (socket) => {
         //update turn number and send start turn to corresponding room with the right user based on which turn
         const users = getRoomUsers(getCurrentUser(socket.id).room)
         const index = roomToTurns.get(users[0].room)
+        // Find what the difference is between picker and host
+        const offset = findOffset(users)
         // If everyone has gone twice, start over game
         if (index > users.length * 2 - 1) {
             const room = getCurrentUser(socket.id).room
@@ -204,8 +211,8 @@ io.on('connection', (socket) => {
             io.to(users[0].room).emit('message', formatMessage(botName, "Waiting for votes..."))
             io.to(room).emit('start voting')
         } else {
-            const currentUser = users[index % (users.length)]
-            console.log(index, currentUser.username)
+            const currentUser = users[(index + offset) % (users.length)]
+            console.log(index + offset, currentUser.username)
             roomToTurns.set(currentUser.room, roomToTurns.get(currentUser.room) + 1)
             io.to(currentUser.room).emit('start turn', currentUser)
         }
@@ -273,7 +280,7 @@ const resetRoom = (room) => {
     roomToTurns.set(room, 0)
     roomToWord.set(room, false)
     roomToChooser.set(room, false)
-    roomToPicked.set(room, false)
+    roomToPicker.set(room, "")
 }
 
 const nextRound = (room) => {
@@ -310,4 +317,24 @@ const removeColor = (user) => {
         }
     }
     roomToColor.set(user.room, colors)
+}
+
+const findOffset = (users) => {
+    var offset
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].username === roomToPicker.get(users[0].room)) {
+            offset = i
+            break
+        }
+    }
+    return offset
+}
+
+const setUpPicker = (user, roomUsers) => {
+    if ((!roomToPicker.get(user.room) || roomToPicker.get(user.room) === "") && user.username === roomUsers[0]) {
+        const currentPicker = roomUsers.splice(0, 1)[0]
+        roomToPicker.set(user.room, currentPicker)
+        roomToUsers.set(user.room, roomUsers)
+        console.log("current picker: ", currentPicker, "user: ", user.username)
+    }
 }

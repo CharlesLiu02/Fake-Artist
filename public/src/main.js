@@ -8,9 +8,9 @@ const displayUsers = (users) => {
     const displayUsers = []
     for (let i = 0; i < users.length; i++) {
         if (users[i].username !== username) {
-            displayUsers.push(`<li>${users[i].username}<span style="display: flex; justify-content: space-around; align-items: stretch;"><div id="color-box"></div><button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button><div id="num-votes"></div></span></li>`)
+            displayUsers.push(`<li><span id="list-name">${users[i].username}</span><span style="display: flex; justify-content: space-around; align-items: stretch;"><div id="color-box"></div><button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button><div id="num-votes"></div></span></li>`)
         } else {
-            displayUsers.push(`<li>${users[i].username}<span style="display: flex; justify-content: space-around; align-items: stretch;"><div id="color-box"></div><div id="num-votes"></div></span></li>`)
+            displayUsers.push(`<li><span id="list-name">${users[i].username}</span><span style="display: flex; justify-content: space-around; align-items: stretch;"><div id="color-box"></div><div id="num-votes"></div></span></li>`)
         }
     }
     userList.innerHTML = `${displayUsers.join('')}`
@@ -60,22 +60,21 @@ const displayColors = (colors) => {
 }
 
 const startGame = () => {
-    // Start the game if host
-    socket.emit('get host')
-
     // Set up category and player color
     socket.emit('set up')
 
+    // Start the game if picker
+    socket.emit('get first')
+
     // Set up word
     socket.emit('pick word')
-
 }
 
 const socket = io()
 var isDraw = false
 var color
 
-socket.on('get host', () => {
+socket.on('get first', () => {
     socket.emit('finished turn')
 })
 
@@ -100,7 +99,14 @@ socket.on('submit word', () => {
     socket.emit('display word')
 })
 
-socket.on('display word', (word) => document.getElementById('word').innerText = word)
+socket.on('display word', (word) => {
+    document.getElementById('word').innerText = word
+    // Clear previous round's votes
+    const userList = document.getElementById("players").getElementsByTagName("li")
+    for (let i = 0; i < userList.length; i++) {
+        userList[i].querySelector('#num-votes').innerText = ""
+    }
+})
 
 // Get room and users
 socket.on('room users', ({room, users}) => {
@@ -120,7 +126,9 @@ socket.on('start turn', (user) => {
     }
     // Highlighting current user
     for (let i = 0; i < userList.length; i++) {
-        if (userList[i].innerText === user.username) {
+        // Make sure number of votes are not included in username
+        const name = userList[i].querySelector('#list-name').innerText
+        if (name === user.username) {
             userList[i].style.color = "blue"
             userList[i].style.fontWeight = "bold"
             break
