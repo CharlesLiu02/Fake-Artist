@@ -8,9 +8,9 @@ const displayUsers = (users) => {
     const displayUsers = []
     for (let i = 0; i < users.length; i++) {
         if (users[i].username !== username) {
-            displayUsers.push(`<li>${users[i].username}<button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button><div id="num-votes"></div><div id="color-box"></div></li>`)
+            displayUsers.push(`<li>${users[i].username}<span style="display: flex; justify-content: space-around; align-items: stretch;"><div id="color-box"></div><button class="vote-btn" value=${users[i].username} style="display: none;">Vote</button><div id="num-votes"></div></span></li>`)
         } else {
-            displayUsers.push(`<li>${users[i].username}<div id="color-box"></div><div id="num-votes"></div></li>`)
+            displayUsers.push(`<li>${users[i].username}<span style="display: flex; justify-content: space-around; align-items: stretch;"><div id="color-box"></div><div id="num-votes"></div></span></li>`)
         }
     }
     userList.innerHTML = `${displayUsers.join('')}`
@@ -138,22 +138,24 @@ socket.on('start voting', () => {
 })
 
 // Show votes
-socket.on('show votes', (votes) => {
-    // const players = document.getElementById('players').getElementsByTagName('li') 
-    // for (const [username, numVotes] of votes.entries()) {
-    //     for (let j = 0; j < players.length; j++) {
-    //         if (username === players[j].innerText) {
-    //             const votesBox = players[j].querySelector("#num-votes")
-    //             votesBox.style = "inline-block"
-    //             votesBox.style.width = "10px"
-    //             votesBox.style.height = "10px"
-    //             votesBox.style.float = "right"
-    //             votesBox.style.marginRight = "40px"
-    //             votesBox.innerText = numVotes
-    //             break
-    //         }
-    //     }
-    // } 
+socket.on('show votes', (votesJson) => {
+    const players = document.getElementById('players').getElementsByTagName('li') 
+    const votes = new Map(JSON.parse(votesJson));
+    for (const [username, numVotes] of votes.entries()) {
+        for (let j = 0; j < players.length; j++) {
+            if (username === players[j].innerText) {
+                const votesBox = players[j].querySelector("#num-votes")
+                votesBox.style = "inline-block"
+                votesBox.style.width = "10px"
+                votesBox.style.height = "10px"
+                votesBox.style.marginRight = "40px"
+                votesBox.innerText = numVotes
+                votesBox.style.color = "red"
+                votesBox.style.fontWeight = "bold"
+                break
+            }
+        }
+    } 
 })
 
 // Start next round with new picker
