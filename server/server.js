@@ -226,7 +226,7 @@ io.on('connection', (socket) => {
         if (getRoomUsers(getCurrentUser(socket.id).room).length === numUsersVoted) {
             // Change votes map to JSON to pass as socket io parameter
             let votesJson = JSON.stringify(Array.from(votes));
-            // io.to(room).emit('show votes', votesJson)
+            io.to(room).emit('show votes', votesJson)
             const maxVotes = Math.max(...votes.values())
             // If Fake Artist has the max amount of votes, they lose
             if (roomToVotes.get(room).get(roomToFakeArtist.get(room)) === maxVotes) {
