@@ -24,16 +24,16 @@ app.get('/', (req, res) => {
 
 const botName = ''
 
-const roomToTurns = new Map()
-const roomToCategories = new Map()
-const roomToUsers = new Map()
-const roomToWord = new Map()
-const roomToChooser = new Map()
-const roomToPicker = new Map()
-const roomToHost = new Map()
-const roomToVotes = new Map()
-const roomToFakeArtist = new Map()
-const roomToColor = new Map()
+const roomToTurns = new Map() // Keeps track of turns index
+const roomToCategories = new Map() // Keeps track of categories
+const roomToUsers = new Map() // Keeps track of users for determining word picker
+const roomToWord = new Map() // Keeps track of current word
+const roomToChooser = new Map() // Keeps track of word picker, makes sure they get the word
+const roomToPicker = new Map() // Keeps track of word picker
+const roomToHost = new Map() // Keeps track of host
+const roomToVotes = new Map() // Keeps track of votes
+const roomToFakeArtist = new Map() // Keeps track of fake artist
+const roomToColor = new Map() // Keeps track of user colors
 const allColors = ['red', 'blue', 'green', '#663399', '#8B4513', "#FF6347", 
                     "#00FFFF", 'black', "#7FFF00", "#FF69B4"]
 
