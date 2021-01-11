@@ -238,15 +238,26 @@ io.on('connection', (socket) => {
             // If Fake Artist has the max amount of votes, they lose
             if (maxVotes.length === 1 && roomToFakeArtist.get(room) === maxVotes[0]) {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist has been found!"))
-                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}"`))
+                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}".`))
                 // TODO: Fake Artist has opportunity to guess
+                guessWord(maxVotes[0], room)
             } else {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist Wins!"))
-                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}"`))
+                io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}".`))
                 // restart game
+                nextRound(room)
             }
-            nextRound(room)
         }
+    })
+
+    socket.on('guess word', (word) => {
+        const room = getCurrentUser(socket.id).room
+        if (word === roomToChooser.get(room).word) {
+            io.to(room).emit('message', formatMessage(botName, `"${roomToFakeArtist.get(room)}" guessed the word!`))
+        } else {
+            io.to(room).emit('message', formatMessage(botName, `"${roomToFakeArtist.get(room)}" guessed "${word}". Incorrect! The word was "${roomToChooser.get(room).word}".`))
+        }
+        nextRound(room)
     })
 
     socket.on('draw', (data) => {
@@ -276,15 +287,26 @@ server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 });
 
+const guessWord = (username, room) => {
+    io.to(room).emit('message', formatMessage(botName, `"${roomToFakeArtist.get(room)}", please guess the word.`))
+    const users = getRoomUsers(room)
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].username === username) {
+            io.to(users[i].id).emit('guess word')
+            break
+        }
+    }
+}
+
 const resetRoom = (room) => {
     roomToTurns.set(room, 0)
-    roomToWord.set(room, false)
-    roomToChooser.set(room, false)
     roomToPicker.set(room, "")
+    roomToWord.set(room, false)
 }
 
 const nextRound = (room) => {
     roomToVotes.set(room, new Map())
+    roomToChooser.set(room, false)
     io.to(room).emit('message', formatMessage(botName, "New round! Word picker please choose your word."))
     io.to(room).emit('start next round')
 }

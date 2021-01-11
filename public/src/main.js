@@ -20,9 +20,13 @@ const togglePopup = () => {
     document.getElementById("popup-1").classList.toggle("active");
 }
 
+const toggleGuessWord = () => {
+    document.getElementById("popup-2").classList.toggle("active");
+}
+
 const submitWord = (e) => {
     e.preventDefault()
-    const word = document.getElementById('word-form-input').value
+    const word = document.getElementById('word-form-input').value.toLowerCase()
     togglePopup()
     socket.emit('submit word', {word, username})
 }
@@ -36,6 +40,14 @@ const sendVote = (e) => {
         voteBtns[i].style.display = "none"
     }
     socket.emit('receive vote', votedPlayer)
+}
+
+const guessWord = (e) => {
+    e.preventDefault()
+    const word = document.getElementById('guess-form-input').value.toLowerCase()
+    toggleGuessWord()
+    socket.emit('guess word', word)
+    document.getElementById('guess-form-input').value = ""
 }
 
 const displayColors = (colors) => {
@@ -166,6 +178,10 @@ socket.on('show votes', (votesJson) => {
     } 
 })
 
+socket.on('guess word', () => {
+    toggleGuessWord()
+})
+
 // Start next round with new picker
 socket.on('start next round', () => {
     clearCanvas()
@@ -177,4 +193,5 @@ socket.emit('join room', {username, room})
 
 startGame()
 
-document.getElementById('submit-btn').addEventListener('click', submitWord)
+document.getElementById('submit-word-btn').addEventListener('click', submitWord)
+document.getElementById('submit-guess-btn').addEventListener('click', guessWord)
