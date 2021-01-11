@@ -234,9 +234,9 @@ io.on('connection', (socket) => {
             // Change votes map to JSON to pass as socket io parameter
             let votesJson = JSON.stringify(Array.from(votes));
             io.to(room).emit('show votes', votesJson)
-            const maxVotes = Math.max(...votes.values())
+            const maxVotes = getMax(votes)
             // If Fake Artist has the max amount of votes, they lose
-            if (roomToVotes.get(room).get(roomToFakeArtist.get(room)) === maxVotes) {
+            if (maxVotes.length === 1 && roomToFakeArtist.get(room) === maxVotes[0]) {
                 io.to(room).emit('message', formatMessage(botName, "Fake Artist has been found!"))
                 io.to(room).emit('message', formatMessage(botName, `The Fake Artist was "${roomToFakeArtist.get(room)}"`))
                 // TODO: Fake Artist has opportunity to guess
@@ -337,4 +337,15 @@ const setUpPicker = (user, roomUsers) => {
         roomToUsers.set(user.room, roomUsers)
         console.log("current picker: ", currentPicker, "user: ", user.username)
     }
+}
+
+const getMax = (votes) => {
+    const maxArray = []
+    const maxVotes = Math.max(...votes.values())
+    for (const [key, value] of votes.entries()) {
+        if (value === maxVotes) {
+            maxArray.push(key)
+        }
+    }
+    return maxArray
 }
